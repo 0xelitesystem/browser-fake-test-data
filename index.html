@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Data Generator</title>
+<meta name="description" content="Generate fake test data locally in your browser. Pick fields and a row count, then export as a table, JSON, CSV, or SQL INSERT statements. No server, no tracking.">
+<link rel="canonical" href="https://0xelitesystem.github.io/mock-data-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mock Data Generator">
+<meta property="og:description" content="Generate fake test data locally in your browser. Table, JSON, CSV, and SQL INSERT output.">
+<meta property="og:url" content="https://0xelitesystem.github.io/mock-data-generator/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Mock Data Generator",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "url": "https://0xelitesystem.github.io/mock-data-generator/",
+  "author": { "@type": "Person", "name": "0xelitesystem", "url": "https://elitesystem.ai" }
+}
+</script>
+<style>
+:root {
+  --bg: #fafaf6;
+  --surface: #ffffff;
+  --ink: #0a1d1e;
+  --ink-soft: #2c4a4c;
+  --rule: #c8d4d3;
+  --teal: #0f5c60;
+  --teal-deep: #0a4548;
+  --gold: #b07d2a;
+  --gold-deep: #8a611f;
+  --err: #8b1a1a;
+  --code-bg: #f0ebe1;
+}
+[data-theme="dark"] {
+  --bg: #0c1c1d;
+  --surface: #14292a;
+  --ink: #e8ebe6;
+  --ink-soft: #b0c0bd;
+  --rule: #2a4042;
+  --teal: #4ab4ba;
+  --teal-deep: #6dc8ce;
+  --gold: #d4a155;
+  --gold-deep: #e6b876;
+  --err: #e88080;
+  --code-bg: #0a1718;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  line-height: 1.55;
+}
+.wrap { max-width: 1100px; margin: 0 auto; }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid var(--teal);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+h1 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.01em; color: var(--teal); }
+.tag {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.75rem;
+  color: var(--gold-deep);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+[data-theme="dark"] .tag { color: var(--gold); }
+.theme-btn {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+.lede { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 1.75rem; max-width: 62ch; }
+.input-box {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-radius: 3px;
+}
+label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.25rem;
+}
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.field-check input { width: 1rem; height: 1rem; cursor: pointer; accent-color: var(--teal); }
+.field-check label { display: inline; margin: 0; font-size: 0.85rem; text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--ink); }
+.controls { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.control-group label { margin-bottom: 0.35rem; }
+input[type="number"], input[type="text"] {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 0.55rem 0.65rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.85rem;
+  border-radius: 2px;
+  width: 140px;
+}
+input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+button {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 2px;
+}
+button:hover { border-color: var(--teal); }
+button.primary { background: var(--teal); border-color: var(--teal); color: var(--surface); font-weight: 600; }
+[data-theme="dark"] button.primary { color: var(--bg) !important; }
+button.primary:hover { background: var(--teal-deep); border-color: var(--teal-deep); }
+.btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+.privacy-note { font-size: 0.78rem; color: var(--gold-deep); margin-top: 0.85rem; }
+[data-theme="dark"] .privacy-note { color: var(--gold); }
+.error-msg {
+  color: var(--err);
+  font-size: 0.85rem;
+  margin-top: 0.85rem;
+  padding: 0.65rem;
+  background: var(--code-bg);
+  border-left: 3px solid var(--err);
+  border-radius: 2px;
+}
+.results { display: none; }
+.results.show { display: block; }
+.section {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: 3px;
+}
+.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; gap: 0.75rem; }
+.section-title { font-size: 0.9rem; font-weight: 600; letter-spacing: 0.02em; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; font-family: ui-monospace, SFMono-Regular, monospace; }
+th, td { border: 1px solid var(--rule); padding: 0.4rem 0.6rem; text-align: left; white-space: nowrap; }
+th { background: var(--code-bg); color: var(--ink-soft); position: sticky; top: 0; }
+pre {
+  background: var(--code-bg);
+  padding: 0.85rem;
+  border-radius: 2px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+  max-height: 400px;
+}
+.copy-btn { font-size: 0.78rem; padding: 0.4rem 0.85rem; }
+footer {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+footer a { color: var(--teal); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+@media (max-width: 640px) {
+  body { padding: 1rem 0.75rem; }
+  h1 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Mock Data Generator</h1>
+    <div class="tag">Fake test data in your browser</div>
+  </div>
+  <button class="theme-btn" id="theme-toggle" type="button">Dark</button>
+</header>
+
+<p class="lede">Pick the fields you need, choose a row count, and generate fake test data. Export as a table, JSON, CSV, or SQL INSERT statements. Everything runs locally in your browser.</p>
+
+<div class="input-box">
+  <label>Fields</label>
+  <div class="fields" id="fields"></div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label for="rows">Rows</label>
+      <input type="number" id="rows" min="1" max="1000" value="10">
+    </div>
+    <div class="control-group">
+      <label for="table-name">SQL table name</label>
+      <input type="text" id="table-name" value="users" spellcheck="false">
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="primary" id="generate-btn" type="button">Generate</button>
+    <button id="all-btn" type="button">Select all</button>
+    <button id="none-btn" type="button">Clear fields</button>
+  </div>
+  <div class="privacy-note">All data is generated locally with your browser. Nothing is sent to any server.</div>
+  <div id="error-box"></div>
+</div>
+
+<div class="results" id="results">
+  <div class="section">
+    <div class="section-head"><div class="section-title">Table preview</div></div>
+    <div class="table-scroll" id="table-out"></div>
+  </div>
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">JSON</div>
+      <button class="copy-btn" data-copy="json-out" type="button">Copy JSON</button>
+    </div>
+    <pre id="json-out"></pre>
+  </div>
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">CSV</div>
+      <button class="copy-btn" data-copy="csv-out" type="button">Copy CSV</button>
+    </div>
+    <pre id="csv-out"></pre>
+  </div>
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">SQL INSERT</div>
+      <button class="copy-btn" data-copy="sql-out" type="button">Copy SQL</button>
+    </div>
+    <pre id="sql-out"></pre>
+  </div>
+</div>
+
+<footer>
+  <div>Mock Data Generator. Open source, MIT licensed. <a href="https://github.com/0xelitesystem/mock-data-generator" target="_blank" rel="noopener">View source</a>.</div>
+  <div>Random data for development and testing.</div>
+</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const themeBtn = $("theme-toggle");
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "Light" : "Dark";
+}
+themeBtn.addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme") || "light";
+  setTheme(cur === "dark" ? "light" : "dark");
+});
+(function initTheme() {
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(prefersDark ? "dark" : "light");
+})();
+
+// Deterministic-ish pools for fake data
+const FIRST = ["Jane","John","Ava","Liam","Noah","Emma","Olivia","Ethan","Mia","Lucas","Amara","Kai","Sofia","Diego","Yuki","Priya","Omar","Nina","Leo","Zara","Hana","Ravi","Elena","Marcus","Chloe","Ibrahim","Freya","Tariq","Isla","Mateo"];
+const LAST = ["Doe","Smith","Nguyen","Patel","Garcia","Kim","Okafor","Rossi","Muller","Silva","Haddad","Cohen","Andersson","Costa","Ivanov","Tanaka","Khan","Novak","Weber","Reyes","Dubois","Fischer","Moreau","Santos","Larsson","Ahmed","Petrov","Yamamoto","Bauer","Mendez"];
+const DOMAINS = ["example.com","test.dev","mail.io","demo.net","inbox.co","sample.org","mailbox.app","corp.biz"];
+const STREETS = ["Maple St","Oak Ave","Cedar Rd","Pine Ln","Elm Blvd","Birch Way","Willow Ct","Ash Dr","Spruce Pl","Aspen Trl","River Rd","Sunset Blvd","Park Ave","Hill St","Lake Dr"];
+const CITIES = ["Springfield","Riverton","Fairview","Lakewood","Georgetown","Kingston","Ashford","Bristol","Clifton","Milton","Dover","Newport","Oakdale","Salem","Auburn"];
+const COUNTRIES = ["United States","Canada","United Kingdom","Germany","France","Japan","Brazil","Australia","India","Spain","Italy","Netherlands","Sweden","Mexico","Portugal"];
+const LOREM = ["lorem","ipsum","dolor","sit","amet","consectetur","adipiscing","elit","sed","do","eiusmod","tempor","incididunt","ut","labore","et","dolore","magna","aliqua","enim","ad","minim","veniam","quis","nostrud","exercitation","ullamco","laboris","nisi","aliquip","ex","ea","commodo"];
+
+function rand(n) { return Math.floor(Math.random() * n); }
+function pick(arr) { return arr[rand(arr.length)]; }
+
+const GENERATORS = {
+  name: () => pick(FIRST) + " " + pick(LAST),
+  email: () => (pick(FIRST) + "." + pick(LAST)).toLowerCase() + rand(1000) + "@" + pick(DOMAINS),
+  phone: () => "+1-" + (200 + rand(800)) + "-" + String(rand(1000)).padStart(3,"0") + "-" + String(rand(10000)).padStart(4,"0"),
+  address: () => (100 + rand(9900)) + " " + pick(STREETS),
+  city: () => pick(CITIES),
+  country: () => pick(COUNTRIES),
+  date: () => {
+    const start = Date.UTC(2015,0,1);
+    const end = Date.UTC(2026,0,1);
+    const d = new Date(start + rand(end - start));
+    return d.toISOString().slice(0,10);
+  },
+  uuid: () => {
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = rand(16); const v = c === "x" ? r : (r & 0x3) | 0x8; return v.toString(16);
+    });
+  },
+  boolean: () => (rand(2) === 1),
+  number: () => rand(10000),
+  lorem: () => {
+    const n = 6 + rand(8);
+    const words = [];
+    for (let i = 0; i < n; i++) words.push(pick(LOREM));
+    let s = words.join(" ");
+    return s.charAt(0).toUpperCase() + s.slice(1) + ".";
+  }
+};
+
+const FIELD_DEFS = [
+  { key: "name", label: "name" },
+  { key: "email", label: "email" },
+  { key: "phone", label: "phone" },
+  { key: "address", label: "address" },
+  { key: "city", label: "city" },
+  { key: "country", label: "country" },
+  { key: "date", label: "date" },
+  { key: "uuid", label: "uuid" },
+  { key: "boolean", label: "boolean" },
+  { key: "number", label: "number" },
+  { key: "lorem", label: "lorem sentence" }
+];
+
+const DEFAULT_ON = ["name", "email", "phone", "country"];
+
+(function buildFields() {
+  const container = $("fields");
+  FIELD_DEFS.forEach((f) => {
+    const wrap = document.createElement("div");
+    wrap.className = "field-check";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.id = "f-" + f.key;
+    cb.value = f.key;
+    if (DEFAULT_ON.includes(f.key)) cb.checked = true;
+    const lbl = document.createElement("label");
+    lbl.setAttribute("for", cb.id);
+    lbl.textContent = f.label;
+    wrap.appendChild(cb);
+    wrap.appendChild(lbl);
+    container.appendChild(wrap);
+  });
+})();
+
+$("all-btn").addEventListener("click", () => {
+  FIELD_DEFS.forEach((f) => { $("f-" + f.key).checked = true; });
+});
+$("none-btn").addEventListener("click", () => {
+  FIELD_DEFS.forEach((f) => { $("f-" + f.key).checked = false; });
+});
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function showError(msg) {
+  $("error-box").innerHTML = '<div class="error-msg">' + escapeHtml(msg) + '</div>';
+  $("results").classList.remove("show");
+}
+function clearError() { $("error-box").innerHTML = ""; }
+
+let currentRows = [];
+let currentFields = [];
+
+function generate() {
+  clearError();
+  const selected = FIELD_DEFS.filter((f) => $("f-" + f.key).checked).map((f) => f.key);
+  if (selected.length === 0) {
+    showError("Select at least one field.");
+    return;
+  }
+  let count = parseInt($("rows").value, 10);
+  if (isNaN(count) || count < 1) {
+    showError("Row count must be a whole number of 1 or more.");
+    return;
+  }
+  if (count > 1000) {
+    showError("Row count is capped at 1000 to keep the browser responsive.");
+    return;
+  }
+  currentFields = selected;
+  currentRows = [];
+  for (let i = 0; i < count; i++) {
+    const row = {};
+    selected.forEach((k) => { row[k] = GENERATORS[k](); });
+    currentRows.push(row);
+  }
+  renderTable();
+  renderJson();
+  renderCsv();
+  renderSql();
+  $("results").classList.add("show");
+}
+
+function renderTable() {
+  const preview = currentRows.slice(0, 100);
+  let html = "<table><thead><tr>";
+  currentFields.forEach((f) => { html += "<th>" + escapeHtml(f) + "</th>"; });
+  html += "</tr></thead><tbody>";
+  preview.forEach((row) => {
+    html += "<tr>";
+    currentFields.forEach((f) => { html += "<td>" + escapeHtml(row[f]) + "</td>"; });
+    html += "</tr>";
+  });
+  html += "</tbody></table>";
+  if (currentRows.length > preview.length) {
+    html += '<div style="font-size:0.78rem;color:var(--ink-soft);margin-top:0.6rem;">Showing first ' + preview.length + ' of ' + currentRows.length + ' rows. Full set is in the export blocks below.</div>';
+  }
+  $("table-out").innerHTML = html;
+}
+
+function renderJson() {
+  $("json-out").textContent = JSON.stringify(currentRows, null, 2);
+}
+
+function csvField(v) {
+  const s = String(v);
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+function renderCsv() {
+  const lines = [currentFields.map(csvField).join(",")];
+  currentRows.forEach((row) => {
+    lines.push(currentFields.map((f) => csvField(row[f])).join(","));
+  });
+  $("csv-out").textContent = lines.join("\n");
+}
+
+function sqlIdent(name) {
+  return String(name).replace(/[^A-Za-z0-9_]/g, "_") || "t";
+}
+function sqlValue(v) {
+  if (typeof v === "boolean") return v ? "TRUE" : "FALSE";
+  if (typeof v === "number") return String(v);
+  return "'" + String(v).replace(/'/g, "''") + "'";
+}
+function renderSql() {
+  const table = sqlIdent($("table-name").value.trim() || "data");
+  const cols = currentFields.map(sqlIdent).join(", ");
+  const lines = [];
+  currentRows.forEach((row) => {
+    const vals = currentFields.map((f) => sqlValue(row[f])).join(", ");
+    lines.push("INSERT INTO " + table + " (" + cols + ") VALUES (" + vals + ");");
+  });
+  $("sql-out").textContent = lines.join("\n");
+}
+
+$("generate-btn").addEventListener("click", generate);
+
+document.querySelectorAll(".copy-btn").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const text = $(btn.getAttribute("data-copy")).textContent;
+    if (!text) return;
+    const original = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = "Copied";
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); btn.textContent = "Copied"; }
+      catch (e2) { btn.textContent = "Copy failed"; }
+      document.body.removeChild(ta);
+    }
+    setTimeout(() => { btn.textContent = original; }, 1500);
+  });
+});
+</script>
+</body>
+</html>
