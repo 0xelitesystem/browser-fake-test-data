@@ -1,8 +1,8 @@
-# Mock Data Generator
+# Browser Fake Test Data
 
 Generate fake test data in your browser. No server, no tracking, no third-party scripts.
 
-**Live demo:** https://0xelitesystem.github.io/mock-data-generator/
+**Live demo:** https://0xelitesystem.github.io/browser-fake-test-data/
 
 ## Use
 
@@ -32,8 +32,8 @@ Everything runs in your browser. The generated data never leaves your machine. T
 ## Run locally
 
 ```bash
-git clone https://github.com/0xelitesystem/mock-data-generator
-cd mock-data-generator
+git clone https://github.com/0xelitesystem/browser-fake-test-data
+cd browser-fake-test-data
 # Open index.html in your browser, or:
 python -m http.server 8000
 ```
@@ -52,6 +52,6 @@ MIT.
 
 ## Related
 
-- [lorem-ipsum-generator](https://github.com/0xelitesystem/lorem-ipsum-generator)
+- [lorem-filler-text-browser](https://github.com/0xelitesystem/lorem-filler-text-browser)
 - [htaccess-redirect-generator](https://github.com/0xelitesystem/htaccess-redirect-generator)
 - [jwt-inspector](https://github.com/0xelitesystem/jwt-inspector)
