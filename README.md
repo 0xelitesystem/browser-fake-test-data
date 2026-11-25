@@ -53,5 +53,5 @@ MIT.
 ## Related
 
 - [lorem-filler-text-browser](https://github.com/0xelitesystem/lorem-filler-text-browser)
-- [htaccess-redirect-generator](https://github.com/0xelitesystem/htaccess-redirect-generator)
+- [htaccess-rewrite-rule-builder](https://github.com/0xelitesystem/htaccess-rewrite-rule-builder)
 - [jwt-verify-in-browser](https://github.com/0xelitesystem/jwt-verify-in-browser)
